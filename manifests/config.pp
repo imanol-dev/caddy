@@ -26,7 +26,7 @@ class caddy::config {
   file { '/etc/systemd/system/caddy.service':
     ensure => $caddy::package_ensure,
     source => 'puppet:///modules/caddy/caddy.service',
-    uid    => 0,
-    gid    => 0
+    owner  => 0,
+    group  => 0
   }
 }
