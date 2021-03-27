@@ -7,19 +7,18 @@
 class caddy::install {
   $_caddy_url = 'https://caddyserver.com/api/download?os=linux&arch=amd64&idempotency=2337053798249'
 
-  group { 'caddy':
-    ensure => $caddy::package_ensure
-  } -> user { 'caddy':
-    ensure  => $caddy::package_ensure,
-    system  => true,
-    home    => '/var/lib/caddy',
-    shell   => '/usr/sbin/nologin',
-    gid     => 'caddy',
-    comment => 'Caddy web server'
-  }
-
   if $caddy::package_ensure == 'present' {
-    exec { 'caddy download':
+    group { 'caddy':
+      ensure => $caddy::package_ensure
+    } -> user { 'caddy':
+      ensure     => $caddy::package_ensure,
+      system     => true,
+      home       => '/var/lib/caddy',
+      managehome => true,
+      shell      => '/usr/sbin/nologin',
+      gid        => 'caddy',
+      comment    => 'Caddy web server'
+    } -> exec { 'caddy download':
       command => "wget '${_caddy_url}' -O /usr/bin/caddy",
       path    => '/usr/bin:/usr/sbin:/bin',
       unless  => 'test -f /usr/bin/caddy'
@@ -32,6 +31,11 @@ class caddy::install {
       unless  => 'grep "auth       sufficient   pam_permit.so" /etc/pam.d/sudo'
     }
   } elsif $caddy::package_ensure == 'absent' {
+    user { 'caddy':
+      ensure => $caddy::package_ensure
+    } -> group { 'caddy':
+      ensure => $caddy::package_ensure
+    }
     file { '/usr/bin/caddy':
       ensure => $caddy::package_ensure
     } -> exec { 'remove auth permits from pam':
