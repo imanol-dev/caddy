@@ -14,6 +14,9 @@ class caddy::config {
   file { '/etc/caddy':
     ensure => $_config_directory_ensure
   } -> file { '/etc/caddy/Caddyfile':
-    ensure => $caddy::package_ensure
+    ensure  => $caddy::package_ensure,
+    group   => 'caddy',
+    owner   => 'caddy',
+    content => epp('caddy/Caddyfile.epp'),
   }
 }
