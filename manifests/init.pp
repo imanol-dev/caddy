@@ -7,7 +7,7 @@
 class caddy (
   String $package_ensure = 'present',
   String $service_ensure = 'running',
-  String $service_enable = true,
+  Boolean $service_enable = true,
   Optional[Hash] $exposed_addresses_content = {},
   Optional[Hash] $reversed_addresses_content = {}
 ) {
