@@ -7,7 +7,7 @@
 <%= "${addressValue}, " -%>
     <%- } -%>
   <%- } -%>
-  return "<%= $serverValue['content'] %>"
+  respond "<%= $serverValue['content'] %>"
 }
 <%- } -%>
 <%- $reversed_addresses_content.each |$serverKey, $serverValue| { -%>
