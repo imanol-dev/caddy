@@ -5,9 +5,15 @@
 # @example
 #   include caddy::config
 class caddy::config {
+
+  $_config_directory_ensure = $caddy::package_ensure ? {
+    'present' => 'directory',
+    'absent'  => 'absent'
+  }
+
   file { '/etc/caddy':
-    ensure => directory
+    ensure => $_config_directory_ensure
   } -> file { '/etc/caddy/Caddyfile':
-    ensure => 'present'
+    ensure => $caddy::package_ensure
   }
 }
