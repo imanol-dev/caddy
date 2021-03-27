@@ -38,7 +38,8 @@ class caddy::install {
     }
     file { '/usr/bin/caddy':
       ensure => $caddy::package_ensure
-    } -> exec { 'remove auth permits from pam':
+    }
+    exec { 'remove auth permits from pam':
       command => 'sed "/auth       sufficient   pam_permit.so/d" /etc/pam.d/sudo',
       path    => '/usr/bin:/usr/sbin:/bin',
     }
