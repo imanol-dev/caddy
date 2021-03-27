@@ -17,6 +17,16 @@ class caddy::config {
     ensure  => $caddy::package_ensure,
     group   => 'caddy',
     owner   => 'caddy',
-    content => epp('caddy/Caddyfile.epp'),
+    content => epp('caddy/Caddyfile.epp', {
+      'exposed_addresses_content'  => $caddy::exposed_addresses_content,
+      'reversed_addresses_content' => $caddy::reversed_addresses_content,
+    }),
+  }
+
+  file { '/etc/systemd/system/caddy.service':
+    ensure => $caddy::package_ensure,
+    source => 'puppet:///modules/caddy/caddy.service',
+    uid    => 0,
+    gid    => 0
   }
 }

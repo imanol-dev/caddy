@@ -5,43 +5,18 @@
 # @example
 #   include caddy
 class caddy (
-  String $package_ensure,
-  Hash[String, Hash[Array[String], String]] $exposed_addresses_content,
+  String $package_ensure = 'present',
+  String $service_ensure = 'running',
+  String $service_enable = true,
+  Optional[Hash] $exposed_addresses_content = {},
+  Optional[Hash] $reversed_addresses_content = {}
 ) {
 
   contain caddy::install
   contain caddy::config
+  contain caddy::service
 
   Class['::caddy::install']
   -> Class['::caddy::config']
+  ~> Class['::caddy::service']
 }
-
-
-/*
-
-caddy::exposed_addresses_content:
-  server1:
-    addresess:
-      - '192.168.13.39:443'
-    content: 'Hello, world!'
-  server2:
-    addresses:
-      - '192.168.13.39:8443'
-      - '192.168.13.39:8543'
-      - 'localhost'
-    content: 'Alternative Hello!!'
-
-
-
-192.168.13.39:443 {
-  respond "Hello, world!"
-}
-
-192.168.13.39:8443, 192.168.13.39:8543, localhost {
-  respond "Alternative Hello!!"
-}
-
-192.168.13.39:8081, 192.168.13.39:8082 {
-  reverse_proxy https://192.168.13.39:8443
-}
-*/

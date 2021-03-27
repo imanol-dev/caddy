@@ -1,5 +1,23 @@
 # File managed by puppet.
-
-<% $caddy::exposed_addresses_content.each |$serverKey, $serverValue| { -%>
-<%= $serverKey %>
-<% } -%>
+<%- $exposed_addresses_content.each |$serverKey, $serverValue| { -%>
+  <%- $serverValue['addresses'].each |$addressIndex, $addressValue| { -%>
+    <%- if ($addressIndex + 1) == $serverValue['addresses'].length { -%>
+<%= "${addressValue} { # $serverKey"  %>
+    <%- } else { -%>
+<%= "${addressValue}, " -%>
+    <%- } -%>
+  <%- } -%>
+  return "<%= $serverValue['content'] %>"
+}
+<%- } -%>
+<%- $reversed_addresses_content.each |$serverKey, $serverValue| { -%>
+  <%- $serverValue['addresses'].each |$addressIndex, $addressValue| { -%>
+    <%- if ($addressIndex + 1) == $serverValue['addresses'].length { -%>
+<%= "${addressValue} { # $serverKey" %>
+    <%- } else { -%>
+<%= "${addressValue}, " -%>
+    <%- } -%>
+  <%- } -%>
+  reverse_proxy <%= $serverValue['reverse'] %>
+}
+<%- } -%>
