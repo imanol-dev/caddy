@@ -11,16 +11,24 @@ class caddy::config {
     'absent'  => 'absent'
   }
 
-  file { '/etc/caddy':
-    ensure => $_config_directory_ensure
-  } -> file { '/etc/caddy/Caddyfile':
-    ensure  => $caddy::package_ensure,
-    group   => 'caddy',
-    owner   => 'caddy',
-    content => epp('caddy/Caddyfile.epp', {
-      'exposed_addresses_content'  => $caddy::exposed_addresses_content,
-      'reversed_addresses_content' => $caddy::reversed_addresses_content,
-    }),
+  if $caddy::package_ensure == 'present' {
+    file { '/etc/caddy':
+      ensure => $_config_directory_ensure
+    } -> file { '/etc/caddy/Caddyfile':
+      ensure  => $caddy::package_ensure,
+      group   => 'caddy',
+      owner   => 'caddy',
+      content => epp('caddy/Caddyfile.epp', {
+        'exposed_addresses_content'  => $caddy::exposed_addresses_content,
+        'reversed_addresses_content' => $caddy::reversed_addresses_content,
+      }),
+    }
+  } else {
+    file { '/etc/caddy/Caddyfile':
+      ensure => $_config_directory_ensure
+    } -> file { '/etc/caddy':
+      ensure => $_config_directory_ensure
+    }
   }
 
   file { '/etc/systemd/system/caddy.service':
