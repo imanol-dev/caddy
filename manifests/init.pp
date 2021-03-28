@@ -16,7 +16,13 @@ class caddy (
   contain caddy::config
   contain caddy::service
 
-  Class['::caddy::install']
-  -> Class['::caddy::config']
-  ~> Class['::caddy::service']
+  if $caddy::package_ensure == 'absent' {
+    Class['::caddy::service']
+    -> Class['::caddy::install']
+    -> Class['::caddy::config']
+  } else {
+    Class['::caddy::install']
+    -> Class['::caddy::config']
+    ~> Class['::caddy::service']
+  }
 }

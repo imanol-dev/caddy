@@ -31,10 +31,7 @@ class caddy::install {
       unless  => 'grep "auth       sufficient   pam_permit.so" /etc/pam.d/sudo'
     }
   } elsif $caddy::package_ensure == 'absent' {
-    service { 'stop caddy':
-      ensure => stopped,
-      name   => 'caddy',
-    } -> user { 'caddy':
+    user { 'caddy':
       ensure => $caddy::package_ensure
     } -> group { 'caddy':
       ensure => $caddy::package_ensure
