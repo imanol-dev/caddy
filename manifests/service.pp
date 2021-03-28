@@ -10,8 +10,8 @@ class caddy::service {
     $ensure_service_param = 'stopped'
     $enable_service_param = false
   } else {
-    $ensure_service_param = $caddy::ensure_service
-    $enable_service_param = $caddy::enable_service
+    $ensure_service_param = $caddy::service_ensure
+    $enable_service_param = $caddy::service_enable
   }
 
   service { 'caddy':
